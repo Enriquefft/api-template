@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "hermes-retail-backend"
+version = "0.1.0"
+description = "FastAPI backend for the Hermes Retail product."
+authors = ["Enrique <enrique.flores@utec.edu.pe>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.0"
+uvicorn = "^0.29.0"
+requests = "^2.32.3"
+sqlalchemy = "^2.0.31"
+psycopg2-binary = "^2.9.9"
+python-multipart = "^0.0.9"
+twilio = "^9.2.3"
+openai = "^1.35.14"
+
+[tool.poetry.group.dev.dependencies]
+poethepoet = "^0.24.4"
+pytest = "^7.4.3"
+pyright = "^1.1.373"
+ruff = "0.5.1"
+
+[tool.poe.tasks]
+test = "pytest"
+format = "ruff format"
+_ruff = "ruff check"
+_pyright = "pyright"
+lint = ["_ruff", "_pyright"]
+
+_build = "poetry build"
+build = ["lint", "test", "_build"]
+export = "poetry export --without-hashes --format=requirements.txt --all-extras --output requirements.txt"
+
+run = "fastapi run"
+
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D203", "D212", "FA", "ANN101", "COM812", "ISC001"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402", "S101"]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+verboseOutput = true
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
