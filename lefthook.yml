@@ -7,7 +7,9 @@ pre-push:
   parallel: true
   commands:
     lint:
-      run: poe lint
+      run: ruff check --fix
+    types:
+      run: poetry run pyright
     test:
       priority: 2
       run: poe test

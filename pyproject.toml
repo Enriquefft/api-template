@@ -27,7 +27,7 @@ test = "pytest"
 format = "ruff format"
 _ruff = "ruff check"
 _pyright = "pyright"
-lint = ["_ruff", "_pyright"]
+lint = ["_pyright"]
 
 _build = "poetry build"
 build = ["lint", "test", "_build"]
