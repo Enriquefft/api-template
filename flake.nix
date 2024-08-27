@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     flakelight.url = "github:nix-community/flakelight";
-    poetry2nixl = { url = "github:nix-community/poetry2nix"; };
+    poetry2nixl = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, flakelight, nixpkgs, poetry2nix, ... }:
@@ -13,10 +16,7 @@
       inputs.nixpkgs = nixpkgs;
       nixpkgs.config = { allowUnfree = true; };
 
-      withOverlays = [
-        poetry2nix.overlays.default
-
-      ];
+      withOverlays = [ poetry2nix.overlays.default ];
 
       devShell = pkgs:
         let
@@ -42,7 +42,6 @@
             projectDir = self;
             python = pkgs.python312;
 
-            # twilio-stubs poetry2nix fix
             overrides = poetry2nix-overrides;
           };
 
