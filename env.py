@@ -30,5 +30,6 @@ PG_PORT = int(get_required_env("PG_PORT", default_value="5432"))
 TWILIO_ACCOUNT_SID = get_required_env("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = get_required_env("TWILIO_AUTH_TOKEN")
 TWILIO_NUMBER = get_required_env("TWILIO_NUMBER")
+TWILIO_MESSAGING_SERVICE_SID = get_required_env("TWILIO_MESSAGING_SERVICE_SID")
 
 OPENAI_API_KEY = get_required_env("OPENAI_API_KEY")

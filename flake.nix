@@ -57,6 +57,8 @@
               coreutils
 
               commitlint-rs
+
+              bruno
               nodejs
             ];
           in [ poetryPkgs ] ++ basePkgs;
