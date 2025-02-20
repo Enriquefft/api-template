@@ -66,7 +66,13 @@
       ]);
 
       # Create a virtual environment containing all dependencies (development mode includes optional deps)
-      virtualenv = pythonSet.mkVirtualEnv "dev-env" workspace.deps.all;
+      virtualenv =
+        (pythonSet.mkVirtualEnv "dev-env" workspace.deps.all).overrideAttrs
+        (old: {
+          # You could also ignore all collisions with:
+          venvIgnoreCollisions = [ "*" ];
+
+        });
     in {
       # The devShell is all you need for interactive work
       devShells.x86_64-linux.default = pkgs.mkShell {

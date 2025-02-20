@@ -4,7 +4,7 @@
 # ruff: noqa: B008 (fastapi makes use of reusable default function calls)
 
 import logging
-from typing import Generator
+from collections.abc import Generator
 
 from fastapi import Depends, FastAPI, Form
 from sqlalchemy.orm import Session
@@ -67,8 +67,3 @@ async def reply(
         return ""
 
     return chat_response
-
-
-def start():
-    """Launched with `run script` at root level"""
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

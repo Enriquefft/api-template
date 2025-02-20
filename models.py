@@ -3,6 +3,7 @@
 from sqlalchemy import Column, Integer, MetaData, String, create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.schema import CreateSchema
 
 from env import PG_DATABASE, PG_HOST, PG_PASSWORD, PG_PORT, PG_USER, PROJECT_NAME
 
@@ -21,8 +22,8 @@ engine = create_engine(db_url, pool_pre_ping=True, pool_recycle=300)
 SessionLocal = sessionmaker(bind=engine)
 
 
-Base = declarative_base(metadata=MetaData(schema=PROJECT_NAME))
 
+Base = declarative_base(metadata=MetaData(schema=PROJECT_NAME))
 
 class User(Base):
     """Model for user table."""
@@ -33,5 +34,9 @@ class User(Base):
     phone_number = Column(String, unique=True, index=True)
     name = Column(String)
 
+
+with engine.connect() as connection:
+    connection.execute(CreateSchema(PROJECT_NAME, if_not_exists=True))
+    connection.commit()
 
 Base.metadata.create_all(engine)
