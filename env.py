@@ -1,10 +1,9 @@
 """Yquando backend env keys & settings module."""
 
 import os
-from typing import Optional
 
 
-def get_required_env[T](env_name: str, default_value: Optional[str] = None) -> str:
+def get_required_env(env_name: str, default_value: str | None = None) -> str:
     """Validate and return an environmental variable."""
     env_var = os.getenv(env_name)
 

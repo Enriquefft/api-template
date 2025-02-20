@@ -10,7 +10,6 @@ if TYPE_CHECKING:
         ChatCompletionSystemMessageParam,
     )
 
-from typing import Optional
 
 from env import OPENAI_API_KEY
 
@@ -19,8 +18,8 @@ openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 def get_response(
     user_message: str,
-    system_message: Optional[str] = None,
-) -> Optional[str]:
+    system_message: str | None = None,
+) -> str | None:
     """Get a response from the OpenAI API."""
     user_role_message: ChatCompletionMessageParam = {
         "role": "user",

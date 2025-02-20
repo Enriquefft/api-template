@@ -2,7 +2,6 @@
 
 import logging
 from json import dumps
-from typing import Dict
 
 from twilio.rest import Client  # pyright: ignore [reportMissingTypeStubs]
 
@@ -34,7 +33,7 @@ def send_message(to_number: str, body_text: str) -> None:
 def send_template_message(
     to_number: str,
     template_sid: str,
-    content_variables: Dict[str, str],
+    content_variables: dict[str, str],
     messaging_service_sid: str,
 ) -> None:
     """Send a message to a phone number using Twilio API."""
