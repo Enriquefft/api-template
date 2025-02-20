@@ -67,3 +67,8 @@ async def reply(
         return ""
 
     return chat_response
+
+
+def start():
+    """Launched with `run script` at root level"""
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
