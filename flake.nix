@@ -28,7 +28,10 @@
   outputs = { nixpkgs, uv2nix, pyproject-nix, pyproject-build-systems, ... }:
     let
       inherit (nixpkgs) lib;
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
       python = pkgs.python312Full;
       ppacks = pkgs.python312Packages;
       hacks = pkgs.callPackage pyproject-nix.build.hacks { };
@@ -76,7 +79,7 @@
     in {
       # The devShell is all you need for interactive work
       devShells.x86_64-linux.default = pkgs.mkShell {
-        buildInputs = [ virtualenv pkgs.uv ];
+        buildInputs = [ pkgs.ngrok virtualenv pkgs.uv ];
         env = {
           # Prevent uv from auto-syncing the environment
           UV_NO_SYNC = "1";
