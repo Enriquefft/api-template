@@ -1,6 +1,5 @@
 {
-  description =
-    "Generic flake for Python API projects using uv2nix (dev shell only)";
+  description = "Generic flake for Python API projects using uv2nix (dev shell only)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -25,15 +24,22 @@
 
   };
 
-  outputs = { nixpkgs, uv2nix, pyproject-nix, pyproject-build-systems, ... }:
+  outputs =
+    {
+      nixpkgs,
+      uv2nix,
+      pyproject-nix,
+      pyproject-build-systems,
+      ...
+    }:
     let
       inherit (nixpkgs) lib;
       pkgs = import nixpkgs {
         system = "x86_64-linux";
         config.allowUnfree = true;
       };
-      python = pkgs.python312Full;
-      ppacks = pkgs.python312Packages;
+      python = pkgs.python314;
+      ppacks = pkgs.python314Packages;
       hacks = pkgs.callPackage pyproject-nix.build.hacks { };
 
       # Load the project’s workspace (using the current directory as root)
@@ -41,8 +47,7 @@
 
       # Create an overlay from your pyproject metadata
       overlay = workspace.mkPyprojectOverlay {
-        sourcePreference =
-          "wheel"; # Prefer binary wheels for better reproducibility
+        sourcePreference = "wheel"; # Prefer binary wheels for better reproducibility
       };
 
       # when using "wheel" as package source, most libraries will work fine, very few need overrides.
@@ -51,35 +56,40 @@
           from = ppacks.pyqt6;
           prev = _prev.pyqt6.overrideAttrs (old: {
             passthru = old.passthru // {
-              dependencies =
-                lib.filterAttrs (name: _: !lib.hasSuffix "-qt6" name)
-                old.passthru.dependencies;
+              dependencies = lib.filterAttrs (name: _: !lib.hasSuffix "-qt6" name) old.passthru.dependencies;
             };
           });
         };
       };
 
       # Compose the Python package set by merging necessary overlays
-      pythonSet = (pkgs.callPackage pyproject-nix.build.packages {
-        inherit python;
-      }).overrideScope (lib.composeManyExtensions [
-        pyproject-build-systems.overlays.default
-        overlay
-        pyprojectOverrides
-      ]);
+      pythonSet =
+        (pkgs.callPackage pyproject-nix.build.packages {
+          inherit python;
+        }).overrideScope
+          (
+            lib.composeManyExtensions [
+              pyproject-build-systems.overlays.default
+              overlay
+              pyprojectOverrides
+            ]
+          );
 
       # Create a virtual environment containing all dependencies (development mode includes optional deps)
-      virtualenv =
-        (pythonSet.mkVirtualEnv "dev-env" workspace.deps.all).overrideAttrs
-        (old: {
-          # You could also ignore all collisions with:
-          venvIgnoreCollisions = [ "*" ];
+      virtualenv = (pythonSet.mkVirtualEnv "dev-env" workspace.deps.all).overrideAttrs (old: {
+        # You could also ignore all collisions with:
+        venvIgnoreCollisions = [ "*" ];
 
-        });
-    in {
+      });
+    in
+    {
       # The devShell is all you need for interactive work
       devShells.x86_64-linux.default = pkgs.mkShell {
-        buildInputs = [ pkgs.ngrok virtualenv pkgs.uv ];
+        buildInputs = [
+          pkgs.ngrok
+          virtualenv
+          pkgs.uv
+        ];
         env = {
           # Prevent uv from auto-syncing the environment
           UV_NO_SYNC = "1";
