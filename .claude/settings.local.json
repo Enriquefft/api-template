@@ -7,7 +7,13 @@
       "Bash(direnv allow:*)",
       "Bash(nix flake update:*)",
       "Bash(uv lock:*)",
-      "Bash(uv tree:*)"
+      "Bash(uv tree:*)",
+      "Bash(find:*)",
+      "Bash(git -C /home/hybridz/Projects/api-template log --oneline)",
+      "Bash(git config:*)",
+      "Bash(cat:*)",
+      "Bash(uv --version:*)",
+      "Bash(uv run pytest:*)"
     ],
     "deny": [],
     "ask": []
