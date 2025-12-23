@@ -18,7 +18,9 @@
       "Bash(uv run pyright:*)",
       "Bash(uv sync:*)",
       "Bash(uv run ruff check:*)",
-      "Bash(uv run ruff format:*)"
+      "Bash(uv run ruff format:*)",
+      "Bash(ruff:*)",
+      "Bash(uv run ruff:*)"
     ],
     "deny": [],
     "ask": []
