@@ -9,7 +9,6 @@ dependencies = [
     "openai>=2.11.0",
     "psycopg2-binary>=2.9.11",
     "python-multipart>=0.0.20",
-    "sqlalchemy>=2.0.45",
     "twilio>=9.8.8",
 ]
 
@@ -43,10 +42,12 @@ select = ["ALL"]
 ignore = ["D203", "D212", "FA", "COM812", "ISC001"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402"]
-"**/{tests,docs,tools}/*" = ["E402", "S101"]
+"__init__.py" = ["E402", "N999"]
+"**/{tests,docs,tools}/*" = ["E402", "S101", "N999"]
 
 [tool.pyright]
 typeCheckingMode = "strict"
 pythonVersion = "3.14"
 verboseOutput = true
+venvPath = "."
+venv = ".venv"

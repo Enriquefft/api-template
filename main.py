@@ -1,18 +1,21 @@
 """Main API module for the chatbot."""
 
 # ruff: noqa: N803 (Twilio API requires Capitalized variable names)
-# ruff: noqa: B008 (fastapi makes use of reusable default function calls)
+
 
 import logging
-from collections.abc import Generator
+from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends, FastAPI, Form
-from sqlalchemy.orm import Session
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+from sqlmodel import Session, select
 
 from ai import get_response
 
 # Internal imports
-from models import SessionLocal, User
+from models import User, get_session
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -29,25 +32,22 @@ async def health() -> dict[str, str]:
 
 
 # Dependency
-def get_db() -> Generator[Session, None, None]:
+def get_db() -> Generator[Session]:
     """Get a database connection."""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    with get_session() as session:
+        yield session
 
 
 @app.post("/message")
 async def reply(
-    Body: str = Form(),
-    From: str = Form(),
-    db: Session = Depends(get_db),
+    Body: Annotated[str, Form()],
+    From: Annotated[str, Form()],
+    db: Annotated[Session, Depends(get_db)],
 ) -> str:
     """Reply to a WhatsApp message from the user."""
     phone_number = From.removeprefix("whatsapp:")
 
-    user = db.query(User).filter(User.phone_number == phone_number).first()
+    user = db.exec(select(User).where(User.phone_number == phone_number)).first()
 
     if not user:
         logger.info("User with phone number %s not found", phone_number)

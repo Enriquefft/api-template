@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Python FastAPI template for WhatsApp/Twilio integration with AI chat capabilities. Uses SQLAlchemy for PostgreSQL persistence and OpenAI for chat completions.
+Python FastAPI template for WhatsApp/Twilio integration with AI chat capabilities. Uses SQLModel for PostgreSQL persistence and OpenAI for chat completions.
 
 ## Development Environment
 
@@ -39,7 +39,7 @@ uv lock                                    # Update lock file
 
 - **main.py** - FastAPI app with `/health` and `/message` (Twilio webhook) endpoints
 - **ai.py** - OpenAI client wrapper for chat completions (gpt-3.5-turbo)
-- **models.py** - SQLAlchemy models and database configuration (User model, schema auto-creation)
+- **models.py** - SQLModel models and database configuration (User model, schema auto-creation)
 - **env.py** - Environment variable validation and configuration
 - **wsp.py** - Twilio WhatsApp messaging client
 
@@ -54,3 +54,7 @@ Pre-commit and pre-push hooks automatically run ruff, pyright, and pytest. Commi
 - **Ruff**: `select = ["ALL"]` with minimal ignores
 - **Pyright**: `strict` mode, Python 3.14
 - All code must pass type checking and linting before commit
+
+## Coding Guidelines
+
+- **Never use inline `# pyright: ignore` comments.** If a library has incomplete type stubs, configure the rule as a warning globally in `pyproject.toml` under `[tool.pyright]` instead of suppressing errors inline.
