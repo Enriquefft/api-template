@@ -2,20 +2,20 @@
 
 # ruff: noqa: N803 (Twilio API requires Capitalized variable names)
 
-
 import logging
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends, FastAPI, Form
 
-if TYPE_CHECKING:
-    from collections.abc import Generator
-from sqlmodel import Session, select
-
 from ai import get_response
 
 # Internal imports
-from models import User, get_session
+from models import SessionLocal, User
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from sqlalchemy.orm import Session
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -34,8 +34,11 @@ async def health() -> dict[str, str]:
 # Dependency
 def get_db() -> Generator[Session]:
     """Get a database connection."""
-    with get_session() as session:
-        yield session
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @app.post("/message")
@@ -47,7 +50,7 @@ async def reply(
     """Reply to a WhatsApp message from the user."""
     phone_number = From.removeprefix("whatsapp:")
 
-    user = db.exec(select(User).where(User.phone_number == phone_number)).first()
+    user = db.query(User).filter(User.phone_number == phone_number).first()
 
     if not user:
         logger.info("User with phone number %s not found", phone_number)
