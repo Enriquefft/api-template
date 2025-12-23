@@ -17,6 +17,8 @@
           pkgs.python314
           pkgs.uv
           pkgs.ngrok
+          pkgs.lefthook
+          pkgs.commitlint-rs
         ];
       };
     };
